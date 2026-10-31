@@ -4,7 +4,11 @@ namespace PruebaTecnica.Domain.Interfaces;
 
 public interface IOrderRepository
 {
-    Task UpdateOrderAsync(Order order);
-    Task CreateOrderAsync(Order order);
-    Task<Order> GetOrderAsync(Guid id);
+    Task<Order?> GetOrderAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Order>> GetOrdersAsync(CancellationToken cancellationToken = default);
+
+    Task CreateOrderAsync(Order order, CancellationToken cancellationToken = default);
+
+    Task RemoveOrderItemAsync(OrderItem item);
 }

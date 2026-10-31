@@ -1,6 +1,75 @@
 @PruebaTecnica_HostAddress = http://localhost:5103
 
-GET {{PruebaTecnica_HostAddress}}/weatherforecast/
-Accept: application/json
+### Clientes
+
+POST {{PruebaTecnica_HostAddress}}/api/customers
+Content-Type: application/json
+
+{
+  "name": "Ana",
+  "lastName": "Pérez",
+  "email": "ana.perez@example.com"
+}
 
 ###
+
+GET {{PruebaTecnica_HostAddress}}/api/customers
+
+###
+
+GET {{PruebaTecnica_HostAddress}}/api/customers/00000000-0000-0000-0000-000000000000
+
+### Productos
+
+POST {{PruebaTecnica_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Tablet 11",
+  "price": 350.00,
+  "stock": 20
+}
+
+###
+
+GET {{PruebaTecnica_HostAddress}}/api/products
+
+### Órdenes
+
+POST {{PruebaTecnica_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "00000000-0000-0000-0000-000000000000",
+  "items": [
+    {
+      "productId": "00000000-0000-0000-0000-000000000000",
+      "quantity": 1
+    },
+    {
+      "productId": "00000000-0000-0000-0000-000000000000",
+      "quantity": 2
+    }
+  ]
+}
+
+###
+
+GET {{PruebaTecnica_HostAddress}}/api/orders
+
+###
+
+PATCH {{PruebaTecnica_HostAddress}}/api/orders/00000000-0000-0000-0000-000000000000/items/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+###
+
+DELETE {{PruebaTecnica_HostAddress}}/api/orders/00000000-0000-0000-0000-000000000000/items/00000000-0000-0000-0000-000000000000
+
+###
+
+GET {{PruebaTecnica_HostAddress}}/api/orders/00000000-0000-0000-0000-000000000000/invoice

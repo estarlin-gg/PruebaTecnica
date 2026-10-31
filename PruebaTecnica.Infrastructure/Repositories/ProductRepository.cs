@@ -5,26 +5,41 @@ using PruebaTecnica.Infrastructure.Context;
 
 namespace PruebaTecnica.Infrastructure.Repositories;
 
-public class ProductRepository : IProductRespository
+public class ProductRepository : IProductRepository
 {
     private readonly ApplicationDbContext _context;
+
     public ProductRepository(ApplicationDbContext context)
     {
         _context = context;
     }
-    public async Task<List<Product>> GetAllProductsAsync()
+
+    public async Task<Product?> GetProductAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var res = await _context.Products.ToListAsync();
-        return res;
+        return await _context.Products
+            .AsNoTracking()
+            .FirstOrDefaultAsync(product => product.Id == id, cancellationToken);
     }
 
-    public  async Task CreateProductAsync(Product product)
+    public async Task<IReadOnlyList<Product>> GetProductsAsync(CancellationToken cancellationToken = default)
     {
-       await _context.Products.AddAsync(product);
+        return await _context.Products
+            .AsNoTracking()
+            .OrderBy(product => product.Name)
+            .ToListAsync(cancellationToken);
     }
 
-    public Task UpdateProductAsync(Product product)
+    public async Task<IReadOnlyList<Product>> GetProductsByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var productIds = ids.ToList();
+
+        return await _context.Products
+            .Where(product => productIds.Contains(product.Id))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task CreateProductAsync(Product product, CancellationToken cancellationToken = default)
+    {
+        await _context.Products.AddAsync(product, cancellationToken);
     }
 }

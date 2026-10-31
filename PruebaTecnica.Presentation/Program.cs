@@ -1,23 +1,32 @@
+using PruebaTecnica.Application;
+using PruebaTecnica.Infrastructure;
+using PruebaTecnica.Infrastructure.Persistence;
+using PruebaTecnica.Presentation.Errors;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = InvalidModelStateResponseFactory.Create;
+});
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+app.UseExceptionHandler();
 app.MapControllers();
+
+await app.Services.InitializeDatabaseAsync();
 
 app.Run();

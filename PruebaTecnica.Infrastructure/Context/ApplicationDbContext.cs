@@ -9,23 +9,18 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<Order> Prders { get; set; }
-    public DbSet<Product> Products { get; set; }
+    public DbSet<Customer> Customers => Set<Customer>();
 
+    public DbSet<Product> Products => Set<Product>();
+
+    public DbSet<Order> Orders => Set<Order>();
+
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Customer>()
-            .HasMany(x => x.Orders)
-            .WithOne(x => x.Customer)
-            .HasForeignKey(x => x.CustomerId);
-
-        
-
     }
 }
